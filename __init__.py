@@ -37,10 +37,11 @@ class MmWaveRadarCompositeSystem:
     for radarSystem in self.radarSystems: del radarSystem
 
 class MmWaveRadarPositioningSystem:
-  def __init__(self, compositeSystem: MmWaveRadarCompositeSystem, clusterRadius: int | float = 0.75, log_enabled: bool = False):
+  def __init__(self, compositeSystem: MmWaveRadarCompositeSystem, clusterRadius: int | float = 0.75, interval_ms: int = 1000, log_enabled: bool = False):
     self.compositeSystem: MmWaveRadarCompositeSystem = compositeSystem
     self.clusterRadius: int | float = clusterRadius
-    self.log_enabled = log_enabled
+    self.interval_ms: int = interval_ms
+    self.log_enabled: bool = log_enabled
     if self.log_enabled: print(f"[{datetime.datetime.now()}] MmWaveRadarPositioningSystem.init({compositeSystem}, {clusterRadius})")
   def start(self):
     if self.log_enabled: print(f"[{datetime.datetime.now()}] MmWaveRadarPositioningSystem.start()")
@@ -84,7 +85,7 @@ if __name__ == "__main__":
       axes.scatter(positioningPoints_[0], positioningPoints_[1], positioningPoints_[2], c="r", alpha=1, label="Cluster Positioning")
       axes.grid(True)
       axes.legend()
-    animation = matplotlib.animation.FuncAnimation(figure, update, fargs=(axes, mmWaveRadarPositioningSystem), interval=mmWaveRadarPositioningSystem.compositeSystem.radarSystems[0].framePeriodicity_ms * mmWaveRadarPositioningSystem.compositeSystem.radarSystems[0].mmWaveDevice.Parse_timeInterval, cache_frame_data=False)
+    animation = matplotlib.animation.FuncAnimation(figure, update, fargs=(axes, mmWaveRadarPositioningSystem), interval=mmWaveRadarPositioningSystem.interval_ms, cache_frame_data=False)
     matplotlib.pyplot.show()
 
   def plot_2d(detectionLimit: AreaLimit_3d, mmWaveRadarPositioningSystem: MmWaveRadarPositioningSystem):
@@ -105,7 +106,7 @@ if __name__ == "__main__":
       axes.scatter(detectedPoints_[0], detectedPoints_[1], c="b", alpha=0.5, label="Detected Points")
       axes.scatter(positioningPoints_[0], positioningPoints_[1], c="r", alpha=1, label="Cluster Positioning")
       axes.legend()
-    animation = matplotlib.animation.FuncAnimation(figure, update, fargs=(axes, mmWaveRadarPositioningSystem), interval=mmWaveRadarPositioningSystem.compositeSystem.radarSystems[0].framePeriodicity_ms * mmWaveRadarPositioningSystem.compositeSystem.radarSystems[0].mmWaveDevice.Parse_timeInterval, cache_frame_data=False)
+    animation = matplotlib.animation.FuncAnimation(figure, update, fargs=(axes, mmWaveRadarPositioningSystem), interval=mmWaveRadarPositioningSystem.interval_ms, cache_frame_data=False)
     matplotlib.pyplot.show()
 
   plot_3d(detectionLimit, mmWaveRadarPositioningSystem)
